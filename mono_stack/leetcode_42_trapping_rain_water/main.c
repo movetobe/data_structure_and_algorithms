@@ -68,22 +68,28 @@ int trap(int *height, int heightSize)
 	int i = 0;
 	struct stack s;
 	int area = 0;
-	int h_low = 0;
-	int h_high = 0;
+	int bottom = 0;
+	int top = 0;
+	int idx_prev = 0;
 
-	stack_init(&s);
 	/* decrease stack */
+	stack_init(&s);
 	for (i = 0; i < heightSize; i++) {
 		while ((!stack_empty(&s)) && (height[i] > height[touch_pop(&s)])) {
-			h_low = height[pop(&s)];
-			if (touch_pop(&s) < 0) {
-				break;
+			/* pop */
+			bottom = height[pop(&s)];
+			if (!stack_empty(&s)) {
+				/* touch top of stack */
+				idx_prev = touch_pop(&s);
+				top = height[i] < height[idx_prev] ? height[i] : height[idx_prev];
+				/* calc */
+				area += ((top - bottom) * (i - idx_prev - 1));
 			}
-			h_high = height[i] < height[touch_pop(&s)] ? height[i] : height[touch_pop(&s)];
-			area += ((h_high - h_low) * (i - touch_pop(&s) - 1));
 		}
+		/* push */
 		push(&s, i);
 	}
+
 	return area;
 }
 
