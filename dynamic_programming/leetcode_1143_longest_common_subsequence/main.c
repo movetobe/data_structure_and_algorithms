@@ -23,20 +23,24 @@ int longest_common_subsequence(char *text1, char *text2)
 	for (i = 0; i <= len1; i++) {
  		lcs[i] = calloc(1, sizeof(int) * (len2 + 1));
 	}
-	for (i = 0; i <= len1; i++) {
-		for (j = 0; j <= len2; j++) {
-			if ((i == 0) || (j == 0)) {
-				lcs[i][j] = 0;
-			} else if (text1[i - 1] == text2[j - 1]) {
+	lcs[0][0] = 0;
+	for (i = 1; i <= len1; i++) {
+		lcs[i][0] = 0;
+	}
+	for (j = 0; j <= len2; j++) {
+		lcs[0][j] = 0;
+	}
+	for (i = 1; i <= len1; i++) {
+		for (j = 1; j <= len2; j++) {
+			if (text1[i - 1] == text2[j - 1]) {
 				lcs[i][j] = lcs[i - 1][j - 1] + 1;
 			} else {
 				lcs[i][j] = (lcs[i - 1][j] > lcs[i][j - 1] ? lcs[i - 1][j] : lcs[i][j - 1]);
 			}
-
-			longest = (longest < lcs[i][j] ? lcs[i][j] : longest);
 		}
 	}
 
+	longest = lcs[len1][len2];
 	for (i = 0; i <= len1; i++) {
 		free(lcs[i]);
 	}
